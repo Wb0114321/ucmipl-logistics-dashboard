@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Dispatch Analytics Visualization
+    </title>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+        href="statics/css/charts.css">
+
+    <!-- GOOGLE FONT -->
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- ICON -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    <!-- CHART -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+</head>
+
+<body>
+
+    <!-- ========================================= -->
+    <!-- HEADER -->
+    <!-- ========================================= -->
+
+    <header class="topbar">
+
+        <div class="top-left">
+
+            <!-- LOGO -->
+
+            <div class="logo-box">
+
+                <img src="statics/images/nalco-logo.png">
+
+            </div>
+
+            <!-- TITLE -->
+
+            <div class="title-box">
+
+                <h1>
+                    DISPATCH ANALYTICS VISUALIZATION
+                </h1>
+
+                <h2>
+                    UTKAL D & UTKAL E COAL MINE - NALCO (UCMIPL), ANGUL
+                </h2>
+
+                <div class="live-indicator">
+
+                    <div class="live-dot"></div>
+
+                    LIVE CHARTS ANALYTICS
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DATE TIME -->
+
+        <div class="datetime-box">
+
+            <h3 id="liveDate"></h3>
+
+            <h1 id="liveTime"></h1>
+
+        </div>
+
+    </header>
+
+    <!-- ========================================= -->
+    <!-- HERO -->
+    <!-- ========================================= -->
+
+    <section class="hero-section">
+
+        <div class="hero-card">
+
+            <!-- LEFT -->
+
+            <div class="hero-left">
+
+                <h1>
+                    Smart Dispatch Visualization
+                </h1>
+
+                <p>
+
+                    Intelligent analytics dashboard for month wise
+                    dispatch monitoring, quantity comparison,
+                    operational trend analysis and live performance insights.
+
+                </p>
+
+                <!-- TAGS -->
+
+                <div class="hero-tags">
+
+                    <span>
+                        Live Charts
+                    </span>
+
+                    <span>
+                        Trend Analytics
+                    </span>
+
+                    <span>
+                        Dispatch Comparison
+                    </span>
+
+                    <span>
+                        Smart Insights
+                    </span>
+
+                </div>
+
+                <!-- HERO STATS -->
+
+                <div class="hero-stats">
+
+                    <!-- TOTAL -->
+
+                    <div class="hero-stat-card">
+
+                        <h3>
+                            Total Dispatch Qty
+                        </h3>
+
+                        <h1 id="totalDispatch">
+                            0
+                        </h1>
+
+                    </div>
+
+                    <!-- ACTIVE -->
+
+                    <div class="hero-stat-card">
+
+                        <h3>
+                            Active Months
+                        </h3>
+
+                        <h1 id="activeMonths">
+                            0
+                        </h1>
+
+                    </div>
+
+                    <!-- HIGHEST -->
+
+                    <div class="hero-stat-card">
+
+                        <h3>
+                            Highest Trips
+                        </h3>
+
+                        <h1 id="highestTrips">
+                            0
+                        </h1>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="hero-right">
+
+                <div class="mini-card">
+
+                    <h3>
+                        Highest Dispatch Month
+                    </h3>
+
+                    <h1 id="highestMonth">
+                        --
+                    </h1>
+
+                    <p id="highestQty">
+                        --
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================= -->
+    <!-- QUICK VISUALIZATION -->
+    <!-- ========================================= -->
+
+    <section class="visual-section">
+
+        <!-- BAR -->
+
+        <div class="visual-card">
+
+            <h2>
+                Dispatch Quantity Comparison
+            </h2>
+
+            <canvas id="miniBarChart"></canvas>
+
+        </div>
+
+        <!-- PIE -->
+
+        <div class="visual-card">
+
+            <h2>
+                Dispatch Percentage Share
+            </h2>
+
+            <canvas id="miniPieChart"></canvas>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================= -->
+    <!-- FILTERS -->
+    <!-- ========================================= -->
+
+    <section class="filter-section">
+
+        <!-- CHART -->
+
+        <div class="filter-card">
+
+            <label>
+                Select Chart
+            </label>
+
+            <select id="chartType">
+
+                <option value="bar">
+                    Bar Chart
+                </option>
+
+                <option value="line">
+                    Trend Line
+                </option>
+
+                <option value="pie">
+                    Pie Chart
+                </option>
+
+                <option value="doughnut">
+                    Doughnut Chart
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- SIZE -->
+
+        <div class="filter-card">
+
+            <label>
+                Chart Size
+            </label>
+
+            <select id="chartSize">
+
+                <option value="450">
+                    Medium
+                </option>
+
+                <option value="600">
+                    Large
+                </option>
+
+                <option value="750">
+                    Extra Large
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- DOWNLOAD -->
+
+        <button class="download-btn"
+            onclick="downloadChart()">
+
+            <i class="fa-solid fa-download"></i>
+
+            Download Chart
+
+        </button>
+
+    </section>
+
+    <!-- ========================================= -->
+    <!-- MAIN CHART -->
+    <!-- ========================================= -->
+
+    <section class="chart-section">
+
+        <div class="chart-box">
+
+            <!-- TITLE -->
+
+            <div class="chart-header">
+
+                <div>
+
+                    <h2>
+                        Advanced Dispatch Visualization
+                    </h2>
+
+                    <p>
+                        Month wise operational trend analytics
+                        with smart comparison and percentage insights
+                    </p>
+
+                </div>
+
+                <!-- LIVE -->
+
+                <div class="live-chart-status">
+
+                    <div class="live-dot"></div>
+
+                    LIVE ANALYTICS
+
+                </div>
+
+            </div>
+
+            <!-- CHART -->
+
+            <canvas id="dispatchChart"></canvas>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================= -->
+    <!-- TABLE -->
+    <!-- ========================================= -->
+
+    <section class="table-section">
+
+        <div class="table-title">
+
+            <h2>
+                Month Wise Dispatch Reports
+            </h2>
+
+            <p>
+                Live dispatch analytics with percentage visualization
+            </p>
+
+        </div>
+
+        <div class="table-container">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            MONTH
+                        </th>
+
+                        <th>
+                            TOTAL TRIPS
+                        </th>
+
+                        <th>
+                            TOTAL QTY
+                        </th>
+
+                        <th>
+                            DISPATCH %
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tableBody">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- ========================================= -->
+    <!-- SCRIPT -->
+    <!-- ========================================= -->
+
+    <script>
+
+        // =========================================
+        // SHEET
+        // =========================================
+
+        const SHEET_ID =
+        "1rUQKjHpdTKMun3tCqdKj_2bTDOc2vA-DKXhgPHz8X3g";
+
+        const SHEET_NAME =
+        "Fy 2026-27_";
+
+        // =========================================
+        // ARRAYS
+        // =========================================
+
+        let monthLabels = [];
+
+        let qtyData = [];
+
+        let tripData = [];
+
+        let dispatchChart;
+
+        let miniBarChart;
+
+        let miniPieChart;
+
+        // =========================================
+        // RANGE
+        // =========================================
+
+        async function getRange(range){
+
+            const url =
+            `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}&range=${range}`;
+
+            const response =
+            await fetch(url);
+
+            return await response.text();
+
+        }
+
+        // =========================================
+        // FORMAT
+        // =========================================
+
+        function formatNumber(value){
+
+            value =
+            value.toString()
+            .replace(/,/g,'');
+
+            return Number(value)
+            .toLocaleString('en-IN',{
+
+                maximumFractionDigits:3
+
+            });
+
+        }
+
+        // =========================================
+        // VALID MONTH
+        // =========================================
+
+        function isValidMonth(month){
+
+            const validMonths = [
+
+                "Apr","May","June","JUNE",
+                "July","JULY","Aug","AUG",
+                "Sept","SEPT","Oct","OCT",
+                "Nov","NOV","Dec","DEC",
+                "Jan","JAN","Feb","FEB",
+                "Mar","MAR"
+
+            ];
+
+            return validMonths.includes(month);
+
+        }
+
+        // =========================================
+        // LOAD DATA
+        // =========================================
+
+        async function loadData(){
+
+            const csv =
+            await getRange("D36:F47");
+
+            const rows =
+            csv.trim().split("\n");
+
+            // RESET
+
+            monthLabels = [];
+
+            qtyData = [];
+
+            tripData = [];
+
+            // TABLE
+
+            const tbody =
+            document.getElementById("tableBody");
+
+            tbody.innerHTML = "";
+
+            // =========================================
+            // LOOP
+            // =========================================
+
+            rows.forEach(row=>{
+
+                const cols =
+                row.split(",");
+
+                // DATA
+
+                const month =
+                cols[0]
+                ?.replace(/"/g,'')
+                .trim();
+
+                const trips =
+                cols[1]
+                ?.replace(/"/g,'')
+                .trim();
+
+                const qty =
+                cols[2]
+                ?.replace(/"/g,'')
+                .trim();
+
+                // NUMBERS
+
+                const tripNumber =
+                Number(
+                    trips.replace(/,/g,'')
+                );
+
+                const qtyNumber =
+                Number(
+                    qty.replace(/,/g,'')
+                );
+
+                // SKIP INVALID
+
+                if(
+
+                    !isValidMonth(month) ||
+
+                    qty === "" ||
+
+                    qty === "0" ||
+
+                    qty === "0.000" ||
+
+                    qtyNumber <= 0 ||
+
+                    tripNumber <= 0
+
+                ){
+
+                    return;
+
+                }
+
+                // PUSH
+
+                monthLabels.push(month);
+
+                qtyData.push(qtyNumber);
+
+                tripData.push(tripNumber);
+
+            });
+
+            // =========================================
+            // TOTAL
+            // =========================================
+
+            const totalDispatch =
+            qtyData.reduce((a,b)=>a+b,0);
+
+            // =========================================
+            // TABLE
+            // =========================================
+
+            monthLabels.forEach((month,index)=>{
+
+                const qty =
+                qtyData[index];
+
+                const trips =
+                tripData[index];
+
+                const percent =
+                ((qty/totalDispatch)*100)
+                .toFixed(1);
+
+                // ROW
+
+                const tr =
+                document.createElement("tr");
+
+                tr.innerHTML = `
+
+                    <td>
+
+                        <div class="month-badge">
+
+                            ${month}
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        ${formatNumber(trips)}
+
+                    </td>
+
+                    <td class="qty-cell">
+
+                        ${formatNumber(qty)}
+
+                    </td>
+
+                    <td>
+
+                        <div class="percent-box">
+
+                            <div class="percent-fill"
+                                style="width:${percent}%">
+
+                            </div>
+
+                            <span>
+
+                                ${percent}%
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                `;
+
+                tbody.appendChild(tr);
+
+            });
+
+            // =========================================
+            // HIGHEST
+            // =========================================
+
+            const maxQty =
+            Math.max(...qtyData);
+
+            const highestIndex =
+            qtyData.indexOf(maxQty);
+
+            document.getElementById("highestMonth")
+            .innerText =
+            monthLabels[highestIndex];
+
+            document.getElementById("highestQty")
+            .innerText =
+            formatNumber(maxQty) + " MT";
+
+            // HERO
+
+            document.getElementById("totalDispatch")
+            .innerText =
+            formatNumber(totalDispatch);
+
+            document.getElementById("activeMonths")
+            .innerText =
+            monthLabels.length;
+
+            document.getElementById("highestTrips")
+            .innerText =
+            formatNumber(
+                Math.max(...tripData)
+            );
+
+            // CHARTS
+
+            createMainChart();
+
+            createMiniCharts();
+
+        }
+
+        // =========================================
+        // MAIN CHART
+        // =========================================
+
+        function createMainChart(){
+
+            const ctx =
+            document.getElementById("dispatchChart");
+
+            if(dispatchChart){
+
+                dispatchChart.destroy();
+
+            }
+
+            const type =
+            document.getElementById("chartType").value;
+
+            dispatchChart =
+            new Chart(ctx,{
+
+                type:type,
+
+                data:{
+
+                    labels:monthLabels,
+
+                    datasets:[{
+
+                        label:"Dispatch Qty",
+
+                        data:qtyData,
+
+                        borderWidth:4,
+
+                        borderRadius:12,
+
+                        tension:0.4,
+
+                        fill:true
+
+                    }]
+
+                },
+
+                options:{
+
+                    responsive:true,
+
+                    maintainAspectRatio:false,
+
+                    animation:{
+
+                        duration:2500
+                    },
+
+                    plugins:{
+
+                        legend:{
+
+                            labels:{
+
+                                color:"#ffffff",
+
+                                font:{
+
+                                    size:18
+                                }
+
+                            }
+
+                        },
+
+                        datalabels:{
+
+                            color:"#ffffff",
+
+                            font:{
+
+                                size:16,
+
+                                weight:'bold'
+                            },
+
+                            formatter:(value)=>{
+
+                                return value.toLocaleString();
+
+                            }
+
+                        }
+
+                    },
+
+                    scales:{
+
+                        x:{
+
+                            ticks:{
+
+                                color:"#ffffff",
+
+                                font:{
+
+                                    size:16
+                                }
+
+                            }
+
+                        },
+
+                        y:{
+
+                            ticks:{
+
+                                color:"#ffffff",
+
+                                font:{
+
+                                    size:16
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                plugins:[ChartDataLabels]
+
+            });
+
+        }
+
+        // =========================================
+        // MINI CHARTS
+        // =========================================
+
+        function createMiniCharts(){
+
+            // BAR
+
+            if(miniBarChart){
+
+                miniBarChart.destroy();
+
+            }
+
+            const barCtx =
+            document.getElementById("miniBarChart");
+
+            miniBarChart =
+            new Chart(barCtx,{
+
+                type:'bar',
+
+                data:{
+
+                    labels:monthLabels,
+
+                    datasets:[{
+
+                        label:'Dispatch Qty',
+
+                        data:qtyData,
+
+                        borderWidth:2,
+
+                        borderRadius:10
+
+                    }]
+
+                },
+
+                options:{
+
+                    responsive:true,
+
+                    maintainAspectRatio:false
+
+                }
+
+            });
+
+            // PIE
+
+            if(miniPieChart){
+
+                miniPieChart.destroy();
+
+            }
+
+            const pieCtx =
+            document.getElementById("miniPieChart");
+
+            miniPieChart =
+            new Chart(pieCtx,{
+
+                type:'doughnut',
+
+                data:{
+
+                    labels:monthLabels,
+
+                    datasets:[{
+
+                        data:qtyData,
+
+                        borderWidth:3
+
+                    }]
+
+                },
+
+                options:{
+
+                    responsive:true,
+
+                    maintainAspectRatio:false,
+
+                    cutout:'60%'
+
+                }
+
+            });
+
+        }
+
+        // =========================================
+        // EVENTS
+        // =========================================
+
+        document.getElementById("chartType")
+        .addEventListener("change",createMainChart);
+
+        // =========================================
+        // DOWNLOAD
+        // =========================================
+
+        function downloadChart(){
+
+            const link =
+            document.createElement("a");
+
+            link.download =
+            "dispatch_chart.png";
+
+            link.href =
+            dispatchChart.toBase64Image();
+
+            link.click();
+
+        }
+
+        // =========================================
+        // CLOCK
+        // =========================================
+
+        function updateClock(){
+
+            const now =
+            new Date();
+
+            document.getElementById("liveDate")
+            .innerText =
+            now.toDateString();
+
+            document.getElementById("liveTime")
+            .innerText =
+            now.toLocaleTimeString();
+
+        }
+
+        setInterval(updateClock,1000);
+
+        updateClock();
+
+        // =========================================
+        // LOAD
+        // =========================================
+
+        loadData();
+
+        setInterval(loadData,5000);
+
+    </script>
+
+</body>
+
+</html>

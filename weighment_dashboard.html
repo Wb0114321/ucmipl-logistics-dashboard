@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Live Weighment Dashboard
+    </title>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+        href="statics/css/weighment_dashboard.css">
+
+    <!-- GOOGLE FONT -->
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- ICON -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div class="top-left">
+
+            <!-- LOGO -->
+
+            <div class="logo-box">
+
+                <img src="statics/images/nalco-logo.png">
+
+            </div>
+
+            <!-- TITLE -->
+
+            <div class="title-box">
+
+                <h1>
+                    LIVE WEIGHMENT DASHBOARD
+                </h1>
+
+                <h2>
+                    UTKAL D & UTKAL E COAL MINE - NALCO (UCMIPL), ANGUL
+                </h2>
+
+                <div class="live-indicator">
+
+                    <div class="live-dot"></div>
+
+                   
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DATE TIME -->
+
+        <div class="datetime-box">
+
+            <h3 id="liveDate"></h3>
+
+            <h1 id="liveTime"></h1>
+
+        </div>
+
+    </header>
+
+    <!-- SUMMARY -->
+
+    <section class="summary-section">
+
+        <!-- TOTAL TRUCKS -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-truck summary-icon"></i>
+
+            <h3>
+                TOTAL IN TRUCKS
+            </h3>
+
+            <h1 id="totalTrucks">
+                0
+            </h1>
+
+        </div>
+
+        <!-- GROSS OUT -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-weight-scale summary-icon"></i>
+
+            <h3>
+                TOTAL GROSS/TP OUT
+            </h3>
+
+            <h1 id="totalGross">
+                0
+            </h1>
+
+        </div>
+
+        <!-- PENDING -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-clock summary-icon"></i>
+
+            <h3>
+                TOTAL PENDING GROSS
+            </h3>
+
+            <h1 id="totalPending">
+                0
+            </h1>
+
+        </div>
+
+    </section>
+
+    <!-- TABLE -->
+
+    <section class="table-section">
+
+        <div class="table-title">
+
+            <h2>
+                Live Vehicle Weighment Data
+            </h2>
+
+        </div>
+
+        <div class="table-container">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            VEHICLE
+                        </th>
+
+                        <th>
+                            TARE TIME
+                        </th>
+
+                        <th>
+                            GROSS TIME
+                        </th>
+
+                        <th>
+                            TAT
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tableBody">
+
+                    <!-- LIVE DATA -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- SCRIPT -->
+
+<script>
+
+    // ==========================================
+    // GOOGLE SHEET CSV LINK
+    // ==========================================
+
+    const sheetURL =
+    "https://docs.google.com/spreadsheets/d/1CaSCG_ng60-CqniAhoIntMn0PfeZSvZljNKJDkCCZko/gviz/tq?tqx=out:csv&sheet=Sheet1";
+
+    // ==========================================
+    // LOAD DATA
+    // ==========================================
+
+    async function loadData(){
+
+        try{
+
+            const response =
+            await fetch(sheetURL);
+
+            const csvText =
+            await response.text();
+
+            // SPLIT ROWS
+
+            const rows =
+            csvText.trim().split("\n");
+
+            // TABLE BODY
+
+            const tableBody =
+            document.getElementById("tableBody");
+
+            tableBody.innerHTML = "";
+
+            // ==========================================
+            // START FROM ROW 2
+            // ==========================================
+
+            for(let i = 1; i < rows.length; i++){
+
+                const cols =
+                rows[i].split(",");
+
+                // B,C,D,E
+
+                const vehicle =
+                cols[1]?.replace(/"/g,'').trim() || "";
+
+                const tareTime =
+                cols[2]?.replace(/"/g,'').trim() || "";
+
+                const grossTime =
+                cols[3]?.replace(/"/g,'').trim() || "";
+
+                const tat =
+                cols[4]?.replace(/"/g,'').trim() || "";
+
+                // EMPTY SKIP
+
+                if(vehicle === "") continue;
+
+                const tr =
+                document.createElement("tr");
+
+                tr.innerHTML = `
+
+                    <td>${vehicle}</td>
+
+                    <td>${tareTime}</td>
+
+                    <td>${grossTime}</td>
+
+                    <td class="tat-cell">
+                        ${tat}
+                    </td>
+
+                `;
+
+                tableBody.appendChild(tr);
+
+            }
+
+            // ==========================================
+            // SUMMARY RANGE
+            // V2 = row 2 col V = index 21
+            // V3 = row 3 col V
+            // V4 = row 4 col V
+            // ==========================================
+
+            const row2 =
+            rows[1]?.split(",");
+
+            const row3 =
+            rows[2]?.split(",");
+
+            const row4 =
+            rows[3]?.split(",");
+
+            // V COLUMN = 21
+
+            const totalTrucks =
+            row2?.[21]?.replace(/"/g,'').trim() || "0";
+
+            const totalGross =
+            row3?.[21]?.replace(/"/g,'').trim() || "0";
+
+            const totalPending =
+            row4?.[21]?.replace(/"/g,'').trim() || "0";
+
+            // SET VALUES
+
+            document.getElementById("totalTrucks")
+            .innerText = totalTrucks;
+
+            document.getElementById("totalGross")
+            .innerText = totalGross;
+
+            document.getElementById("totalPending")
+            .innerText = totalPending;
+
+        }
+
+        catch(error){
+
+            console.log("ERROR :", error);
+
+        }
+
+    }
+
+    // ==========================================
+    // LIVE CLOCK
+    // ==========================================
+
+    function updateClock(){
+
+        const now =
+        new Date();
+
+        document.getElementById("liveDate")
+        .innerText =
+        now.toDateString();
+
+        document.getElementById("liveTime")
+        .innerText =
+        now.toLocaleTimeString();
+
+    }
+
+    setInterval(updateClock,1000);
+
+    updateClock();
+
+    // ==========================================
+    // FIRST LOAD
+    // ==========================================
+
+    loadData();
+
+    // ==========================================
+    // AUTO REFRESH
+    // ==========================================
+
+    setInterval(()=>{
+
+        loadData();
+
+    },5000);
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Reports Summary Dashboard
+    </title>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+        href="statics/css/reports_dashboard.css">
+
+    <!-- GOOGLE FONT -->
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- ICON -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div class="top-left">
+
+            <!-- LOGO -->
+
+            <div class="logo-box">
+
+                <img src="statics/images/nalco-logo.png">
+
+            </div>
+
+            <!-- TITLE -->
+
+            <div class="title-box">
+
+                <h1>
+                    REPORTS SUMMARY DASHBOARD
+                </h1>
+
+                <h2>
+                    UTKAL D & UTKAL E COAL MINE - NALCO (UCMIPL), ANGUL
+                </h2>
+
+                <div class="live-indicator">
+
+                    <div class="live-dot"></div>
+
+                    Live Reports Analytics
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DATETIME -->
+
+        <div class="datetime-box">
+
+            <h3 id="liveDate"></h3>
+
+            <h1 id="liveTime"></h1>
+
+        </div>
+
+    </header>
+
+    <!-- SUMMARY SECTION -->
+
+    <section class="summary-section">
+
+        <!-- CARD 1 -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-truck-ramp-box summary-icon"></i>
+
+            <h3>
+                TOTAL DISPATCHED QTY OF FY 2026-27
+            </h3>
+
+            <h1 id="fyQty">
+                0
+            </h1>
+
+        </div>
+
+        <!-- CARD 2 -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-calendar-days summary-icon"></i>
+
+            <h3>
+                TOTAL DISPATCHED QTY OF THIS MONTH
+            </h3>
+
+            <h1 id="monthQty">
+                0
+            </h1>
+
+        </div>
+
+        <!-- CARD 3 -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-file-circle-check summary-icon"></i>
+
+            <h3>
+                TOTAL PERMIT CREDITED
+            </h3>
+
+            <h1 id="permitCredit">
+                0
+            </h1>
+
+        </div>
+
+        <!-- CARD 4 -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-weight-scale summary-icon"></i>
+
+            <h3>
+                TOTAL LIFTED
+            </h3>
+
+            <h1 id="totalLifted">
+                0
+            </h1>
+
+        </div>
+
+        <!-- CARD 5 -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-layer-group summary-icon"></i>
+
+            <h3>
+                TOTAL PERMIT BALANCE
+            </h3>
+
+            <h1 id="permitBalance">
+                0
+            </h1>
+
+        </div>
+
+    </section>
+
+    <!-- REPORT TABLE -->
+
+    <section class="table-section">
+
+        <div class="table-title">
+
+            <h2>
+                Month Wise Dispatch Reports
+            </h2>
+
+        </div>
+
+        <div class="table-container">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            MONTH OF DISPATCHED
+                        </th>
+
+                        <th>
+                            TOTAL TRIPS
+                        </th>
+
+                        <th>
+                            TOTAL QTY
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="reportTableBody">
+
+                    <!-- LIVE DATA -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+<script>
+
+    // ==========================================
+    // SHEET ID
+    // ==========================================
+
+    const SHEET_ID =
+    "1rUQKjHpdTKMun3tCqdKj_2bTDOc2vA-DKXhgPHz8X3g";
+
+    const SHEET_NAME =
+    "Fy 2026-27_";
+
+    // ==========================================
+    // GET RANGE CSV
+    // ==========================================
+
+    async function getRange(range){
+
+        const url =
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}&range=${range}`;
+
+        const response =
+        await fetch(url);
+
+        return await response.text();
+
+    }
+
+    // ==========================================
+    // FORMAT NUMBER
+    // ==========================================
+
+    function formatNumber(value){
+
+        if(!value) return "0";
+
+        value =
+        value
+        .replace(/"/g,'')
+        .replace(/MT/g,'')
+        .replace(/,/g,'')
+        .trim();
+
+        const number =
+        parseFloat(value);
+
+        if(isNaN(number)) return value;
+
+        return number.toLocaleString('en-IN',{
+
+            minimumFractionDigits:2,
+            maximumFractionDigits:3
+
+        });
+
+    }
+
+    // ==========================================
+    // LOAD SUMMARY
+    // ==========================================
+
+    async function loadSummary(){
+
+        // AD6
+
+        const fyQty =
+        await getRange("AD6");
+
+        // AD8
+
+        const monthQty =
+        await getRange("AD8");
+
+        // AD10
+
+        const permitCredit =
+        await getRange("AD10");
+
+        // AD12
+
+        const totalLifted =
+        await getRange("AD12");
+
+        // AD14
+
+        const permitBalance =
+        await getRange("AD14");
+
+        // SET VALUES
+
+        document.getElementById("fyQty")
+        .innerText =
+        formatNumber(fyQty);
+
+        document.getElementById("monthQty")
+        .innerText =
+        formatNumber(monthQty);
+
+        document.getElementById("permitCredit")
+        .innerText =
+        formatNumber(permitCredit);
+
+        document.getElementById("totalLifted")
+        .innerText =
+        formatNumber(totalLifted);
+
+        document.getElementById("permitBalance")
+        .innerText =
+        formatNumber(permitBalance);
+
+    }
+
+    // ==========================================
+    // LOAD MONTH TABLE
+    // ==========================================
+
+    async function loadMonthTable(){
+
+        const csv =
+        await getRange("D36:F47");
+
+        const rows =
+        csv.trim().split("\n");
+
+        const tbody =
+        document.getElementById("reportTableBody");
+
+        tbody.innerHTML = "";
+
+        rows.forEach(row=>{
+
+            const cols =
+            row.split(",");
+
+            const month =
+            cols[0]
+            ?.replace(/"/g,'')
+            .trim() || "";
+
+            const trips =
+            cols[1]
+            ?.replace(/"/g,'')
+            .trim() || "";
+
+            const qty =
+            cols[2]
+            ?.replace(/"/g,'')
+            .trim() || "";
+
+            // SKIP EMPTY
+
+            if(
+                month === "" ||
+                qty === "" ||
+                qty === "0" ||
+                qty === "0.000" ||
+                qty === "0.00"
+            ){
+
+                return;
+
+            }
+
+            // ROW
+
+            const tr =
+            document.createElement("tr");
+
+            tr.innerHTML = `
+
+                <td>${month}</td>
+
+                <td>${formatNumber(trips)}</td>
+
+                <td class="qty-cell">
+                    ${formatNumber(qty)}
+                </td>
+
+            `;
+
+            tbody.appendChild(tr);
+
+        });
+
+    }
+
+    // ==========================================
+    // LOAD ALL
+    // ==========================================
+
+    async function loadReports(){
+
+        await loadSummary();
+
+        await loadMonthTable();
+
+    }
+
+    // ==========================================
+    // LIVE CLOCK
+    // ==========================================
+
+    function updateClock(){
+
+        const now =
+        new Date();
+
+        document.getElementById("liveDate")
+        .innerText =
+        now.toDateString();
+
+        document.getElementById("liveTime")
+        .innerText =
+        now.toLocaleTimeString();
+
+    }
+
+    setInterval(updateClock,1000);
+
+    updateClock();
+
+    // ==========================================
+    // FIRST LOAD
+    // ==========================================
+
+    loadReports();
+
+    // ==========================================
+    // AUTO REFRESH
+    // ==========================================
+
+    setInterval(()=>{
+
+        loadReports();
+
+    },5000);
+
+</script>
+
+</body>
+
+</html>
