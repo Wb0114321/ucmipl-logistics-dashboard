@@ -1,131 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Live Weighment Dashboard
+    </title>
+
+    <!-- CSS -->
+
+    <link rel="stylesheet"
+        href="statics/css/weighment_dashboard.css">
+
+    <!-- GOOGLE FONT -->
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- ICON -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div class="top-left">
+
+            <!-- LOGO -->
+
+            <div class="logo-box">
+
+                <img src="statics/images/nalco-logo.png" alt="NALCO Logo">
+
+            </div>
+
+            <!-- TITLE -->
+
+            <div class="title-box">
+
+                <h1>
+                    LIVE WEIGHMENT DASHBOARD
+                </h1>
+
+                <h2>
+                    UTKAL D & UTKAL E COAL MINE - NALCO ANGUL
+                </h2>
+
+                <div class="live-indicator">
+
+                    <div class="live-dot"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DATE TIME -->
+
+        <div class="datetime-box">
+
+            <h3 id="liveDate"></h3>
+
+            <h1 id="liveTime"></h1>
+
+        </div>
+
+    </header>
+
+    <!-- SUMMARY -->
+
+    <section class="summary-section">
+
+        <!-- TOTAL TRUCKS -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-truck summary-icon"></i>
+
+            <h3>
+                TOTAL IN TRUCKS
+            </h3>
+
+            <h1 id="totalTrucks">
+                0
+            </h1>
+
+        </div>
+
+        <!-- GROSS OUT -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-weight-scale summary-icon"></i>
+
+            <h3>
+                TOTAL GROSS/TP OUT
+            </h3>
+
+            <h1 id="totalGross">
+                0
+            </h1>
+
+        </div>
+
+        <!-- PENDING -->
+
+        <div class="summary-card">
+
+            <i class="fa-solid fa-clock summary-icon"></i>
+
+            <h3>
+                TOTAL PENDING GROSS
+            </h3>
+
+            <h1 id="totalPending">
+                0
+            </h1>
+
+        </div>
+
+    </section>
+
+    <!-- TABLE -->
+
+    <section class="table-section">
+
+        <div class="table-title">
+
+            <h2>
+                Live Vehicle Weighment Data
+            </h2>
+
+        </div>
+
+        <div class="table-container">
+
+            <table class="dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            VEHICLE
+                        </th>
+
+                        <th>
+                            TARE TIME
+                        </th>
+
+                        <th>
+                            GROSS TIME
+                        </th>
+
+                        <th>
+                            TAT
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tableBody">
+
+                    <!-- LIVE DATA -->
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- SCRIPT -->
+
 <script>
 
-// ==========================================
-// DEMO DATA
-// ==========================================
+    // ==========================================
+    // DEMO DATA (REPLACING GOOGLE SHEET DATA)
+    // ==========================================
 
-const demoData = [
+    const demoVehiclesData = [
+        { vehicle: "OR-09-A-1234", tareTime: "08:15 AM", grossTime: "08:45 AM", tat: "30 Mins" },
+        { vehicle: "OD-19-B-5678", tareTime: "08:30 AM", grossTime: "09:05 AM", tat: "35 Mins" },
+        { vehicle: "OR-02-C-9012", tareTime: "08:50 AM", grossTime: "09:15 AM", tat: "25 Mins" },
+        { vehicle: "OD-05-D-3456", tareTime: "09:10 AM", grossTime: "09:50 AM", tat: "40 Mins" },
+        { vehicle: "OR-14-E-7890", tareTime: "09:25 AM", grossTime: "Pending", tat: "--" },
+        { vehicle: "OD-22-F-4321", tareTime: "09:40 AM", grossTime: "Pending", tat: "--" },
+        { vehicle: "OR-09-G-8765", tareTime: "09:55 AM", grossTime: "Pending", tat: "--" }
+    ];
 
-    {
-        vehicle: "OD19AB1234",
-        tareTime: "08:10:25",
-        grossTime: "08:58:15",
-        tat: "00:47:50"
-    },
+    const demoSummaryData = {
+        totalTrucks: 148,
+        totalGross: 112,
+        totalPending: 36
+    };
 
-    {
-        vehicle: "OD35CD5678",
-        tareTime: "08:18:40",
-        grossTime: "09:09:22",
-        tat: "00:50:42"
-    },
+    // ==========================================
+    // LOAD DEMO DATA
+    // ==========================================
 
-    {
-        vehicle: "OD11EF9087",
-        tareTime: "08:26:05",
-        grossTime: "09:18:31",
-        tat: "00:52:26"
-    },
+    function loadData(){
 
-    {
-        vehicle: "CG04GH5566",
-        tareTime: "08:39:10",
-        grossTime: "09:31:45",
-        tat: "00:52:35"
-    },
+        try{
 
-    {
-        vehicle: "JH10JK4433",
-        tareTime: "08:47:28",
-        grossTime: "09:40:19",
-        tat: "00:52:51"
-    },
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = "";
 
-    {
-        vehicle: "OD23LM7788",
-        tareTime: "09:02:44",
-        grossTime: "Pending",
-        tat: "--"
-    },
+            // POPULATE TABLE WITH DEMO DATA
 
-    {
-        vehicle: "CG15NP6655",
-        tareTime: "09:11:16",
-        grossTime: "Pending",
-        tat: "--"
-    },
+            demoVehiclesData.forEach(item => {
 
-    {
-        vehicle: "OD02QR9988",
-        tareTime: "09:20:03",
-        grossTime: "Pending",
-        tat: "--"
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td>${item.vehicle}</td>
+                    <td>${item.tareTime}</td>
+                    <td>${item.grossTime}</td>
+                    <td class="tat-cell">${item.tat}</td>
+                `;
+
+                tableBody.appendChild(tr);
+
+            });
+
+            // SET SUMMARY VALUES
+
+            document.getElementById("totalTrucks").innerText = demoSummaryData.totalTrucks;
+            document.getElementById("totalGross").innerText = demoSummaryData.totalGross;
+            document.getElementById("totalPending").innerText = demoSummaryData.totalPending;
+
+        }
+
+        catch(error){
+
+            console.log("ERROR :", error);
+
+        }
+
     }
 
-];
+    // ==========================================
+    // LIVE CLOCK
+    // ==========================================
 
-// ==========================================
-// LOAD DEMO DATA
-// ==========================================
+    function updateClock(){
 
-function loadData(){
+        const now = new Date();
 
-    const tableBody =
-    document.getElementById("tableBody");
+        document.getElementById("liveDate").innerText = now.toDateString();
+        document.getElementById("liveTime").innerText = now.toLocaleTimeString();
 
-    tableBody.innerHTML = "";
+    }
 
-    demoData.forEach(item=>{
+    setInterval(updateClock, 1000);
+    updateClock();
 
-        const tr =
-        document.createElement("tr");
+    // ==========================================
+    // FIRST LOAD
+    // ==========================================
 
-        tr.innerHTML = `
-            <td>${item.vehicle}</td>
-            <td>${item.tareTime}</td>
-            <td>${item.grossTime}</td>
-            <td class="tat-cell">${item.tat}</td>
-        `;
+    loadData();
 
-        tableBody.appendChild(tr);
+    // ==========================================
+    // AUTO REFRESH (UPDATES DEMO COUNT)
+    // ==========================================
 
-    });
+    setInterval(()=>{
 
-    document.getElementById("totalTrucks").innerText = "158";
-    document.getElementById("totalGross").innerText = "147";
-    document.getElementById("totalPending").innerText = "11";
+        loadData();
 
-}
-
-// ==========================================
-// LIVE CLOCK
-// ==========================================
-
-function updateClock(){
-
-    const now = new Date();
-
-    document.getElementById("liveDate").innerText =
-    now.toLocaleDateString("en-IN",{
-        weekday:"long",
-        day:"2-digit",
-        month:"long",
-        year:"numeric"
-    });
-
-    document.getElementById("liveTime").innerText =
-    now.toLocaleTimeString("en-IN");
-
-}
-
-setInterval(updateClock,1000);
-
-updateClock();
-
-// ==========================================
-// LOAD FIRST TIME
-// ==========================================
-
-loadData();
+    }, 5000);
 
 </script>
+
+</body>
+
+</html>
